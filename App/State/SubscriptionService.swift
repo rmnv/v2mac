@@ -66,13 +66,15 @@ final class SubscriptionService {
     /// info, other client User-Agents are tried once, and the first that makes the provider send
     /// it is remembered for this subscription. A User-Agent set by hand in Settings is never replaced.
     private func fetch(url: URL, route: FetchRoute, rememberedAgent: String?, alreadyProbed: Bool) async throws -> FetchOutcome {
-        let first = try await SubscriptionFetcher(userAgent: rememberedAgent ?? Prefs.userAgent).fetch(url: url, route: route)
+        let headers = Prefs.subscriptionIdentityHeaders
+        let first = try await SubscriptionFetcher(userAgent: rememberedAgent ?? Prefs.userAgent, requestHeaders: headers)
+            .fetch(url: url, route: route)
         let customised = !(UserDefaults.standard.string(forKey: "userAgent") ?? "").isEmpty
         if first.metadata.hasUsageInfo || rememberedAgent != nil || alreadyProbed || customised {
             return FetchOutcome(result: first, userAgent: rememberedAgent, probed: alreadyProbed || first.metadata.hasUsageInfo)
         }
         for agent in Self.compatibleAgents {
-            if let alternative = try? await SubscriptionFetcher(userAgent: agent).fetch(url: url, route: route),
+            if let alternative = try? await SubscriptionFetcher(userAgent: agent, requestHeaders: headers).fetch(url: url, route: route),
                alternative.metadata.hasUsageInfo, !alternative.profiles.isEmpty {
                 return FetchOutcome(result: alternative, userAgent: agent, probed: true)
             }

@@ -14,11 +14,13 @@ public enum FetchRoute: Sendable, Equatable {
 
 public struct SubscriptionFetcher: Sendable {
     public var userAgent: String
+    public var requestHeaders: [String: String]
     public var timeout: TimeInterval
     public var maxBytes: Int
 
-    public init(userAgent: String, timeout: TimeInterval = 15, maxBytes: Int = 10 * 1024 * 1024) {
+    public init(userAgent: String, requestHeaders: [String: String] = [:], timeout: TimeInterval = 15, maxBytes: Int = 10 * 1024 * 1024) {
         self.userAgent = userAgent
+        self.requestHeaders = requestHeaders
         self.timeout = timeout
         self.maxBytes = maxBytes
     }
@@ -30,6 +32,9 @@ public struct SubscriptionFetcher: Sendable {
         }
         var request = URLRequest(url: url)
         request.setValue(userAgent, forHTTPHeaderField: "User-Agent")
+        for (name, value) in requestHeaders where !value.isEmpty {
+            request.setValue(value, forHTTPHeaderField: name)
+        }
         request.timeoutInterval = timeout
 
         do {

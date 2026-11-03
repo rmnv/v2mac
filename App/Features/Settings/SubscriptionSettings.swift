@@ -6,6 +6,8 @@ struct SubscriptionSettings: View {
     @AppStorage("subscriptionUpdateViaProxy") private var viaProxy = false
     @AppStorage("defaultIntervalHours") private var hours = 12
     @AppStorage("userAgent") private var userAgent = ""
+    @AppStorage("sendSubscriptionHWID") private var sendHWID = false
+    @AppStorage("subscriptionHWID") private var hwid = ""
     @AppStorage("latencyURL") private var url = "https://www.wikipedia.org"
     @AppStorage("latencyTimeout") private var timeout = 8.0
     @AppStorage("latencyConcurrency") private var concurrency = 32
@@ -23,10 +25,18 @@ struct SubscriptionSettings: View {
                 Stepper("Default interval: \(hours) h", value: $hours, in: 1...168)
                     .disabled(!auto)
                 TextField("User-Agent", text: $userAgent, prompt: Text("v2mac/\(Prefs.appVersion)"))
+                Toggle("Send device ID (HWID)", isOn: $sendHWID)
+                if sendHWID {
+                    HStack {
+                        TextField("HWID", text: $hwid)
+                            .textFieldStyle(.roundedBorder)
+                        Button("Regenerate") { hwid = UUID().uuidString.lowercased() }
+                    }
+                }
             } header: {
                 Text("Subscriptions")
             } footer: {
-                Text("The default interval is used when the provider doesn't send one.")
+                Text("The default interval is used when the provider doesn't send one. HWID is sent only to subscription providers that require a device limit.")
             }
 
             Section {
@@ -42,5 +52,10 @@ struct SubscriptionSettings: View {
             ResetSettingsSection(tab: .servers)
         }
         .formStyle(.grouped)
+        .onAppear {
+            if hwid.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                hwid = Prefs.subscriptionHWID
+            }
+        }
     }
 }

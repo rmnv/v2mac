@@ -217,6 +217,24 @@ import Testing
         #expect(server.userAgent == "v2mac/0.1.0-test")
     }
 
+    @Test func directFetchSendsDeviceIdentityHeaders() async throws {
+        let payload = Data(body.utf8)
+        let server = try await TestHTTPServer.start { _ in .init(body: payload) }
+        defer { server.stop() }
+        let hwid = "4139def9-6877-4771-b313-49e3119ba158"
+        let fetcher = SubscriptionFetcher(userAgent: "v2mac/test", requestHeaders: [
+            "x-hwid": hwid,
+            "x-device-os": "macOS",
+            "x-ver-os": "15.5.0",
+            "x-device-model": "Mac",
+        ])
+        _ = try await fetcher.fetch(url: URL(string: "http://127.0.0.1:\(server.port)/sub")!, route: .direct)
+        #expect(server.header("x-hwid") == hwid)
+        #expect(server.header("x-device-os") == "macOS")
+        #expect(server.header("x-ver-os") == "15.5.0")
+        #expect(server.header("x-device-model") == "Mac")
+    }
+
     @Test func httpErrorIsReported() async throws {
         let server = try await TestHTTPServer.start { _ in .init(status: 404) }
         defer { server.stop() }

@@ -130,7 +130,7 @@ enum Prefs {
              "noisePacket", "noiseDelay", "dnsEnabled", "dnsServers", "dnsQueryStrategy", "outboundInterface"]
         case .warp: ["warpExit"]
         case .servers:
-            ["autoUpdateSubscriptions", "subscriptionUpdateViaProxy", "defaultIntervalHours", "userAgent",
+            ["autoUpdateSubscriptions", "subscriptionUpdateViaProxy", "defaultIntervalHours", "userAgent", "sendSubscriptionHWID",
              "latencyURL", "latencyTimeout", "latencyConcurrency", "speedTestURL"]
         case .sandbox: ["sandboxRAMCapMB"]
         case .notifications: NotificationKind.allCases.map(\.key)
@@ -164,6 +164,7 @@ enum Prefs {
             "outboundInterface": "",
             "autoUpdateSubscriptions": true,
             "subscriptionUpdateViaProxy": false,
+            "sendSubscriptionHWID": false,
             "defaultIntervalHours": 12,
             "latencyURL": "https://www.wikipedia.org",
             "latencyTimeout": 8.0,
@@ -503,6 +504,29 @@ enum Prefs {
     static var userAgent: String {
         get { defaults.string(forKey: "userAgent") ?? "v2mac/\(appVersion)" }
         set { defaults.set(newValue, forKey: "userAgent") }
+    }
+
+    /// A random, install-local identifier used only when the user enables provider device limits.
+    static var subscriptionHWID: String {
+        get {
+            let saved = defaults.string(forKey: "subscriptionHWID")?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+            if !saved.isEmpty { return String(saved.prefix(36)) }
+            let generated = UUID().uuidString.lowercased()
+            defaults.set(generated, forKey: "subscriptionHWID")
+            return generated
+        }
+        set { defaults.set(String(newValue.trimmingCharacters(in: .whitespacesAndNewlines).prefix(36)), forKey: "subscriptionHWID") }
+    }
+
+    static var subscriptionIdentityHeaders: [String: String] {
+        guard defaults.bool(forKey: "sendSubscriptionHWID") else { return [:] }
+        let version = ProcessInfo.processInfo.operatingSystemVersion
+        return [
+            "x-hwid": subscriptionHWID,
+            "x-device-os": "macOS",
+            "x-ver-os": "\(version.majorVersion).\(version.minorVersion).\(version.patchVersion)",
+            "x-device-model": "Mac",
+        ]
     }
 }
 

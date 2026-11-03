@@ -17,9 +17,11 @@ final class TestHTTPServer: Sendable {
     let port: Int
     private let listener: NWListener
     private let lastUserAgent = OSAllocatedUnfairLock<String?>(initialState: nil)
+    private let lastHeaders = OSAllocatedUnfairLock<[String: String]>(initialState: [:])
     private let connections = OSAllocatedUnfairLock<[NWConnection]>(initialState: [])
 
     var userAgent: String? { lastUserAgent.withLock { $0 } }
+    func header(_ name: String) -> String? { lastHeaders.withLock { $0[name.lowercased()] } }
 
     private init(listener: NWListener, port: Int) {
         self.listener = listener
@@ -39,6 +41,15 @@ final class TestHTTPServer: Sendable {
                 let request = String(decoding: data ?? Data(), as: UTF8.self)
                 let lines = request.components(separatedBy: "\r\n")
                 let path = lines.first?.split(separator: " ").dropFirst().first.map(String.init) ?? "/"
+                var headers: [String: String] = [:]
+                for line in lines.dropFirst() {
+                    guard let colon = line.firstIndex(of: ":") else { continue }
+                    let name = line[..<colon].lowercased()
+                    let value = line[line.index(after: colon)...].trimmingCharacters(in: .whitespaces)
+                    headers[String(name)] = value
+                }
+                let parsedHeaders = headers
+                box.withLock { $0 }?.lastHeaders.withLock { $0 = parsedHeaders }
                 if let ua = lines.first(where: { $0.lowercased().hasPrefix("user-agent:") }) {
                     let value = ua.dropFirst("user-agent:".count).trimmingCharacters(in: .whitespaces)
                     box.withLock { $0 }?.lastUserAgent.withLock { $0 = value }
