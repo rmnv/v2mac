@@ -1,5 +1,5 @@
 import SwiftUI
-import UserNotifications
+@preconcurrency import UserNotifications
 
 /// Which events post a notification (spec 12.6).
 struct NotificationSettings: View {

@@ -185,7 +185,7 @@ struct WindowCloseGuard: NSViewRepresentable {
 
     final class GuardView: NSView, NSWindowDelegate {
         var shouldClose: @MainActor () -> Bool = { true }
-        private weak var original: NSWindowDelegate?
+        nonisolated(unsafe) private weak var original: NSWindowDelegate?
 
         override func viewDidMoveToWindow() {
             super.viewDidMoveToWindow()

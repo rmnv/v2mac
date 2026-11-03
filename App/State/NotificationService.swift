@@ -1,6 +1,6 @@
 import AppKit
 import Observation
-import UserNotifications
+@preconcurrency import UserNotifications
 
 /// One switch in Settings → Notifications (spec 12.6). The raw value is part of the settings key.
 enum NotificationKind: String, CaseIterable, Identifiable, Sendable {

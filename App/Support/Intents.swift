@@ -298,7 +298,8 @@ struct GetExitIPIntent: AppIntent {
             return .result(value: "", dialog: "V2Mac does not know the exit address. Connect first.")
         }
         let place = [exit.city, exit.countryCode].compactMap { $0 }.joined(separator: ", ")
-        return .result(value: exit.ip, dialog: place.isEmpty ? "\(exit.ip)" : "\(exit.ip), \(place)")
+        let dialog: IntentDialog = place.isEmpty ? "\(exit.ip)" : "\(exit.ip), \(place)"
+        return .result(value: exit.ip, dialog: dialog)
     }
 }
 

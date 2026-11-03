@@ -74,7 +74,7 @@ struct RulesSidebar: View {
             Button { doctoring = true } label: {
                 Label("Rules Doctor", systemImage: "stethoscope").frame(maxWidth: .infinity)
             }
-            .buttonStyle(.glass)
+            .buttonStyle(.bordered)
             .controlSize(.large)
             .padding(10)
             .help("Find errors, conflicts and rules that can be simpler, and fix them")

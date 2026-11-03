@@ -3,7 +3,6 @@ import SwiftUI
 struct ConnectionBar: View {
     @Environment(AppModel.self) private var model
     @Environment(\.openWindow) private var openWindow
-    @Namespace private var glassNamespace
     @State private var copied = false
     @AppStorage("countTraffic") private var countTraffic = true
 
@@ -11,16 +10,19 @@ struct ConnectionBar: View {
 
     var body: some View {
         let tier = tier
-        GlassEffectContainer(spacing: 14) {
-            content(rates: tier.rates, showAddress: tier.showsAddress)
-                // The bar must not ask for the width of the layout it is showing: the split
-                // view would then widen the column, a larger layout would fit and ask for
-                // more, and the window's layout would never settle (it crashed in narrow windows).
-                .frame(minWidth: 0, maxWidth: .infinity)
-                .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { widthChanged(to: $0) }
-                .background { rulers }
-                .glassEffect(barGlass, in: .capsule)
-        }
+        content(rates: tier.rates, showAddress: tier.showsAddress)
+            // The bar must not ask for the width of the layout it is showing: the split
+            // view would then widen the column, a larger layout would fit and ask for
+            // more, and the window's layout would never settle (it crashed in narrow windows).
+            .frame(minWidth: 0, maxWidth: .infinity)
+            .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { widthChanged(to: $0) }
+            .background { rulers }
+            .background(.regularMaterial, in: .capsule)
+            .overlay {
+                if case .failed = connection.phase {
+                    Capsule().fill(.red.opacity(0.16))
+                }
+            }
         .animation(.smooth(duration: 0.35), value: connection.phase)
         .padding(.horizontal, 16)
         .padding(.bottom, 12)
@@ -170,8 +172,7 @@ struct ConnectionBar: View {
                 .frame(width: Self.buttonWidth, height: Self.buttonWidth)
         }
         .buttonStyle(.plain)
-        .glassEffect(.regular.tint(stateColor).interactive(), in: .circle)
-        .glassEffectID("connect", in: glassNamespace)
+        .background((stateColor ?? .secondary).opacity(0.22), in: .circle)
         .disabled(connection.activeServer == nil)
         .opacity(connection.activeServer == nil ? 0.4 : 1)
         .help(connection.activeServer == nil ? "Select a server first" : (connection.phase == .connected ? "Disconnect" : "Connect"))
@@ -283,10 +284,6 @@ struct ConnectionBar: View {
         }
     }
 
-    private var barGlass: Glass {
-        if case .failed = connection.phase { return .regular.tint(.red.opacity(0.22)) }
-        return .regular
-    }
 }
 
 /// The graph and the live rates. On their own so that the once-a-second updates do not

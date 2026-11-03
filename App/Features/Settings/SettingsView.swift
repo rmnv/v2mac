@@ -1,4 +1,4 @@
-import ServiceManagement
+@preconcurrency import ServiceManagement
 import SwiftUI
 import V2MacCore
 

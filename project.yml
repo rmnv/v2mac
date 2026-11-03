@@ -3,7 +3,7 @@ options:
   bundleIdPrefix: io.github.lordversa
   developmentLanguage: en
   deploymentTarget:
-    macOS: "26.0"
+    macOS: "15.0"
   createIntermediateGroups: true
 settings:
   base:
@@ -32,7 +32,6 @@ targets:
       - Shared
     dependencies:
       - package: V2MacCore
-      - target: V2MacControl
       - target: V2MacPrivilegedHelper
         link: false
       - target: V2MacCLI
@@ -113,26 +112,6 @@ targets:
       configs:
         Debug:
           PRODUCT_BUNDLE_IDENTIFIER: io.github.lordversa.v2mac.dev.cli
-  # The Control Center switch (spec 12.4). WidgetKit needs the extension sandboxed.
-  V2MacControl:
-    type: app-extension
-    platform: macOS
-    sources:
-      - Extensions/Control
-      - App/Support/ControlBridge.swift
-    settings:
-      base:
-        PRODUCT_BUNDLE_IDENTIFIER: io.github.lordversa.v2mac.control
-        PRODUCT_NAME: V2MacControl
-        GENERATE_INFOPLIST_FILE: NO
-        INFOPLIST_FILE: Extensions/Control/Info.plist
-        CODE_SIGN_ENTITLEMENTS: Extensions/Control/V2MacControl.entitlements
-        CODE_SIGN_STYLE: Automatic
-        ENABLE_HARDENED_RUNTIME: NO
-        SKIP_INSTALL: YES
-      configs:
-        Debug:
-          PRODUCT_BUNDLE_IDENTIFIER: io.github.lordversa.v2mac.dev.control
   v2macStateTests:
     type: bundle.unit-test
     platform: macOS

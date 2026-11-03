@@ -30,15 +30,17 @@ xcodebuild -project v2mac.xcodeproj -scheme v2mac -configuration Release \
 APP="$BUILD_DIR/Build/Products/Release/V2Mac.app"
 [[ -d "$APP" ]] || { echo "error: build produced no app" >&2; exit 1; }
 
-# The helper and the Control Center extension must be signed before the app that contains
-# them. WidgetKit loads the extension only with its sandbox entitlement.
+# Embedded helpers and extensions must be signed before the app that contains them.
 CODESIGN_ARGS=(--force --sign "$SIGN_IDENTITY")
 [[ "$SIGN_IDENTITY" != "-" ]] && CODESIGN_ARGS+=(--options runtime --timestamp)
 /usr/bin/codesign "${CODESIGN_ARGS[@]}" --identifier io.github.lordversa.v2mac.xray "$APP/Contents/Helpers/xray"
 /usr/bin/codesign "${CODESIGN_ARGS[@]}" --identifier io.github.lordversa.v2mac.privileged \
   "$APP/Contents/Library/HelperTools/V2MacPrivilegedHelper"
-/usr/bin/codesign "${CODESIGN_ARGS[@]}" --entitlements "$ROOT/Extensions/Control/V2MacControl.entitlements" \
-  "$APP/Contents/PlugIns/V2MacControl.appex"
+CONTROL_EXTENSION="$APP/Contents/PlugIns/V2MacControl.appex"
+if [[ -d "$CONTROL_EXTENSION" ]]; then
+  /usr/bin/codesign "${CODESIGN_ARGS[@]}" --entitlements "$ROOT/Extensions/Control/V2MacControl.entitlements" \
+    "$CONTROL_EXTENSION"
+fi
 /usr/bin/codesign "${CODESIGN_ARGS[@]}" --entitlements "$ENTITLEMENTS" "$APP"
 /usr/bin/codesign --verify --deep --strict "$APP"
 

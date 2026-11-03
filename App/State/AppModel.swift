@@ -2,10 +2,10 @@ import AppIntents
 import AppKit
 import CoreSpotlight
 import Observation
-import ServiceManagement
+@preconcurrency import ServiceManagement
 import SwiftData
 import SwiftUI
-import UserNotifications
+@preconcurrency import UserNotifications
 import V2MacCore
 import WidgetKit
 import notify
@@ -321,7 +321,6 @@ final class AppModel {
             }
             if on != ControlBridge.isConnected {
                 ControlBridge.publish(connected: on)
-                ControlCenter.shared.reloadControls(ofKind: ControlBridge.kind)
             }
         } onChange: { [weak self] in
             Task { @MainActor in self?.publishControlState() }

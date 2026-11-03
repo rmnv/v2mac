@@ -1,4 +1,4 @@
-import ServiceManagement
+@preconcurrency import ServiceManagement
 import SwiftUI
 
 struct GeneralSettings: View {

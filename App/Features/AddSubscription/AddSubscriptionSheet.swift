@@ -104,7 +104,7 @@ struct AddSubscriptionSheet: View {
                 } else {
                     Button("Add") { add() }
                         .keyboardShortcut(.defaultAction)
-                        .buttonStyle(.glassProminent)
+                        .buttonStyle(.borderedProminent)
                         .disabled(input.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 }
             }

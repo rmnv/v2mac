@@ -95,7 +95,7 @@ struct ServerListView: View {
                             .fixedSize()
                             .padding(.horizontal, 36)
                             .padding(.vertical, 28)
-                            .glassEffect(.regular, in: .rect(cornerRadius: 28))
+                            .background(.regularMaterial, in: .rect(cornerRadius: 28))
                             .transition(.blurReplace)
                         }
                     }
@@ -133,8 +133,6 @@ struct ServerListView: View {
             ToolbarItem {
                 UpdateButton()
             }
-            .sharedBackgroundVisibility(.hidden)
-            ToolbarSpacer(.fixed)
         }
         ToolbarItem {
             Button { model.showAddSheet = true } label: {
@@ -142,7 +140,6 @@ struct ServerListView: View {
             }
             .help("Add a subscription or custom configs (⌘N)")
         }
-        ToolbarSpacer(.fixed)
         ToolbarItem {
             ToolbarSplitButton(
                 title: "Update", systemImage: "arrow.clockwise", isSpinning: isUpdating,
@@ -155,7 +152,6 @@ struct ServerListView: View {
                     .disabled(!model.connection.isRunning)
             }
         }
-        ToolbarSpacer(.fixed)
         ToolbarItem {
             // Test stays available while a run goes on: what it asks for is queued after it.
             HStack(spacing: 0) {
@@ -176,7 +172,6 @@ struct ServerListView: View {
                 }
             }
         }
-        ToolbarSpacer(.fixed)
         ToolbarItem {
             Button { model.showInspector.toggle() } label: {
                 Label("Inspector", systemImage: "sidebar.right")
@@ -274,7 +269,7 @@ private struct MissingFavoritesToast: View {
                 .padding(.leading, 14)
                 .padding(.trailing, 10)
                 .padding(.vertical, 8)
-                .glassEffect(.regular, in: .capsule)
+                .background(.regularMaterial, in: .capsule)
                 .padding(.horizontal, 12)
                 .padding(.bottom, 10)
                 .transition(reduceMotion ? .opacity : .move(edge: .bottom).combined(with: .opacity))

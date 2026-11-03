@@ -131,9 +131,13 @@ public struct RuleImport: Sendable, Equatable {
                 let values = rule[key]?.arrayValue ?? rule[key].map { [$0] } ?? []
                 return values.compactMap { $0.stringValue ?? $0.intValue.map(String.init) }
             }
-            let hosts = list("domain").map { "full:" + $0 } + list("domain_suffix").map { "domain:" + $0.trimmingPrefix(".") }
-                + list("domain_keyword").map { "keyword:" + $0 } + list("domain_regex").map { "regexp:" + $0 }
-                + list("ip_cidr") + list("geosite").map { "geosite:" + $0 } + list("geoip").map { "geoip:" + $0 }
+            var hosts: [String] = list("domain").map { "full:" + $0 }
+            hosts += list("domain_suffix").map { "domain:" + $0.trimmingPrefix(".") }
+            hosts += list("domain_keyword").map { "keyword:" + $0 }
+            hosts += list("domain_regex").map { "regexp:" + $0 }
+            hosts += list("ip_cidr")
+            hosts += list("geosite").map { "geosite:" + $0 }
+            hosts += list("geoip").map { "geoip:" + $0 }
             let apps = list("process_name") + list("process_path")
             let name = rule["outbound"]?.stringValue ?? rule["action"]?.stringValue ?? ""
             let only = Self.only(ports: list("port") + list("port_range").map { $0.replacingOccurrences(of: ":", with: "-") },

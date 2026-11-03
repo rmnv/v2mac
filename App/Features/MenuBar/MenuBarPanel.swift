@@ -514,8 +514,7 @@ private struct PowerOrb: View {
                     .foregroundStyle(phase == .off ? Color.primary : Color.white)
                     .symbolEffect(.bounce, value: isOn)
                     .frame(width: 44, height: 44)
-                    // Not interactive glass: it takes the click for itself, and the button misses some.
-                    .glassEffect(.regular.tint(color), in: .circle)
+                    .background((color ?? .secondary).opacity(0.22), in: .circle)
             }
             .frame(width: 58, height: 58)
             .contentShape(.circle)

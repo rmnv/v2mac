@@ -1,4 +1,6 @@
+#if canImport(FoundationModels)
 import FoundationModels
+#endif
 import SwiftUI
 import UniformTypeIdentifiers
 import V2MacCore
@@ -63,7 +65,7 @@ struct SmartField: View {
                         }
                         .buttonStyle(.plain)
                     }
-                    if SystemLanguageModel.default.isAvailable, !text.isEmpty, !RuleMatchers.isIP(text) {
+                    if Self.domainSuggestionsAvailable, !text.isEmpty, !RuleMatchers.isIP(text) {
                         Button { suggestDomains() } label: {
                             Label(suggesting ? String(localized: "Asking Apple Intelligence…") : String(localized: "Suggest domains for “\(text)”"),
                                   systemImage: "apple.intelligence")
@@ -143,6 +145,7 @@ struct SmartField: View {
 
     /// On-device Apple Intelligence names the domains a service uses.
     private func suggestDomains() {
+#if canImport(FoundationModels)
         let request = text.trimmingCharacters(in: .whitespaces)
         suggesting = true
         Task {
@@ -156,6 +159,15 @@ struct SmartField: View {
                 note = error.localizedDescription
             }
         }
+#endif
+    }
+
+    private static var domainSuggestionsAvailable: Bool {
+#if canImport(FoundationModels)
+        SystemLanguageModel.default.isAvailable
+#else
+        false
+#endif
     }
 
     /// Tried against the on-device model: without the examples it gives only the main domain,
@@ -170,11 +182,13 @@ struct SmartField: View {
         """
 }
 
+#if canImport(FoundationModels)
 @Generable
 struct SuggestedDomains {
     @Guide(description: "Every domain the services use: their main site, video and image servers (CDNs), APIs and short links", .count(1...20))
     var domains: [String]
 }
+#endif
 
 extension Rule.Item.Kind {
     /// The kind's name as a resource, for building a sentence around it.

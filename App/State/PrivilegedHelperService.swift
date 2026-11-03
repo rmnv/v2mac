@@ -2,7 +2,7 @@ import AppKit
 import Foundation
 import Observation
 import os
-import ServiceManagement
+@preconcurrency import ServiceManagement
 import V2MacCore
 
 @MainActor @Observable

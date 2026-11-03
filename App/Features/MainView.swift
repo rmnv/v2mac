@@ -29,7 +29,7 @@ struct MainView: View {
                     Text("Add a subscription URL, or paste configs with ⌘V.")
                 } actions: {
                     Button("Add Subscription") { model.showAddSheet = true }
-                        .buttonStyle(.glassProminent)
+                        .buttonStyle(.borderedProminent)
                 }
             } else {
                 ServerListView()
@@ -76,9 +76,7 @@ struct UpdateButton: View {
     var tab: SettingsTab = .general
     @Environment(AppModel.self) private var model
     @Environment(\.openSettings) private var openSettings
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var hovering = false
-    @State private var glowStart = Date()
     @State private var closing: Task<Void, Never>?
 
     var body: some View {
@@ -88,7 +86,7 @@ struct UpdateButton: View {
             pillLabel.hidden()
             if hovering {
                 pillLabel
-                    .glassEffect(.regular, in: .capsule)
+                    .background(.regularMaterial, in: .capsule)
                     .background { glow }
                     .contentShape(.capsule)
                     .onTapGesture(perform: open)
@@ -126,7 +124,6 @@ struct UpdateButton: View {
         closing?.cancel()
         if inside {
             guard !hovering else { return }
-            glowStart = .now
             withAnimation(.smooth(duration: 0.3)) { hovering = true }
         } else {
             closing = Task {
@@ -149,36 +146,14 @@ struct UpdateButton: View {
             }
     }
 
-    /// Blobs of colour drift, swell and flare behind the pill on their own beats, like a sun's surface.
+    /// A lightweight macOS 15 fallback for the animated Liquid Glass glow.
     private var glow: some View {
-        TimelineView(.animation(paused: reduceMotion)) { context in
-            // Measured from the hover, not the reference date: huge values wreck the sines' precision.
-            let t = context.date.timeIntervalSince(glowStart)
-            // Shapes, not a Canvas: the toolbar clips a Canvas to the item's own frame.
-            GeometryReader { proxy in
-                let size = proxy.size
-                ZStack(alignment: .topLeading) {
-                    ForEach(Self.flares.indices, id: \.self) { i in
-                        let n = Double(i)
-                        let x = size.width * (0.5 + 0.48 * sin(t * (0.35 + 0.07 * n) + n * 1.9))
-                        let y = size.height * (0.5 + 0.3 * sin(t * (0.6 + 0.11 * n) + n * 2.7))
-                        let r = size.height * (0.4 + 0.15 * sin(t * (0.8 + 0.13 * n) + n))
-                        let flare = 0.2 + 0.7 * pow(0.5 + 0.5 * sin(t * (1.1 + 0.23 * n) + n * 3.3), 2)
-                        Ellipse()
-                            .fill(Self.flares[i].opacity(flare))
-                            .frame(width: r * 3.2, height: r * 2)
-                            .position(x: x, y: y)
-                    }
-                }
-                .blendMode(.plusLighter)
-            }
-            .padding(-6)
-            .clipShape(.capsule)
+        Capsule()
+            .fill(Self.rainbow)
+            .padding(-4)
             .blur(radius: 8)
-        }
+            .opacity(0.75)
     }
-
-    private static let flares: [Color] = [.red, .orange, .yellow, .pink, .orange, .purple, .cyan, .red]
 
     private static let rainbow = AngularGradient(colors: [.red, .orange, .yellow, .green, .cyan, .blue, .purple, .red], center: .center)
 }
