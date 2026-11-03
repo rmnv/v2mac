@@ -6,14 +6,14 @@
 VLESS, REALITY, VMess, Trojan, Shadowsocks, Hysteria2 и WireGuard в быстром приложении для строки меню на SwiftUI для Apple Silicon.</p>
 
 <p align="center">
-  <a href="https://github.com/v2macapp/v2mac/releases/latest"><img src="https://img.shields.io/github/v/release/v2macapp/v2mac?label=release&color=0A84FF" alt="Последний релиз"></a>
-  <a href="https://github.com/v2macapp/v2mac/releases"><img src="https://img.shields.io/github/downloads/v2macapp/v2mac/total?color=34C759" alt="Загрузки"></a>
-  <a href="https://github.com/v2macapp/v2mac/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/v2macapp/v2mac/ci.yml?branch=main&label=CI" alt="Статус CI"></a>
+  <a href="https://github.com/rmnv/v2mac/releases/latest"><img src="https://img.shields.io/github/v/release/rmnv/v2mac?label=release&color=0A84FF" alt="Последний релиз"></a>
+  <a href="https://github.com/rmnv/v2mac/releases"><img src="https://img.shields.io/github/downloads/rmnv/v2mac/total?color=34C759" alt="Загрузки"></a>
+  <a href="https://github.com/rmnv/v2mac/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/rmnv/v2mac/ci.yml?branch=main&label=CI" alt="Статус CI"></a>
   <img src="https://img.shields.io/badge/macOS-15%2B-000000?logo=apple" alt="macOS 15 или новее">
   <img src="https://img.shields.io/badge/Apple%20Silicon-arm64-555555" alt="Apple Silicon">
   <img src="https://img.shields.io/badge/Swift-6-F05138?logo=swift&logoColor=white" alt="Swift 6">
-  <a href="LICENSE"><img src="https://img.shields.io/github/license/v2macapp/v2mac?color=blue" alt="Лицензия GPL-3.0"></a>
-  <a href="https://github.com/v2macapp/v2mac/stargazers"><img src="https://img.shields.io/github/stars/v2macapp/v2mac?style=flat&color=FFCC00" alt="Звёзды на GitHub"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/rmnv/v2mac?color=blue" alt="Лицензия GPL-3.0"></a>
+  <a href="https://github.com/rmnv/v2mac/stargazers"><img src="https://img.shields.io/github/stars/rmnv/v2mac?style=flat&color=FFCC00" alt="Звёзды на GitHub"></a>
 </p>
 
 <p align="center"><a href="README.md">English</a> | <a href="README.fa.md">فارسی</a> | <a href="README.zh.md">简体中文</a> | Русский</p>
@@ -21,8 +21,7 @@ VLESS, REALITY, VMess, Trojan, Shadowsocks, Hysteria2 и WireGuard в быстр
 <p align="center">
   <a href="#установка">Установка</a> ·
   <a href="#возможности">Возможности</a> ·
-  <a href="https://v2macapp.github.io"><b>Сайт</b></a> ·
-  <a href="https://github.com/v2macapp/v2mac/wiki/ru-Home"><b>Документация</b></a> ·
+  <a href="https://github.com/rmnv/v2mac"><b>GitHub</b></a> ·
   <a href="#сборка-из-исходников">Сборка</a>
 </p>
 
@@ -33,6 +32,8 @@ VLESS, REALITY, VMess, Trojan, Shadowsocks, Hysteria2 и WireGuard в быстр
 ## Отличия от оригинального V2Mac
 
 Этот форк сохраняет работоспособность V2Mac на компьютерах Mac, которые не могут запустить оригинальную сборку для macOS 26.
+
+Автор и мейнтейнер форка: **[Anton Romanov](https://github.com/rmnv)**.
 
 | | Этот форк | Оригинальный V2Mac |
 |---|---|---|
@@ -96,8 +97,6 @@ VLESS, REALITY, VMess, Trojan, Shadowsocks, Hysteria2 и WireGuard в быстр
 | [Справочник настроек](https://github.com/v2macapp/v2mac/wiki/ru-Settings-Reference) | Все настройки, резервная копия, приватность |
 | [Решение проблем и FAQ](https://github.com/v2macapp/v2mac/wiki/ru-Troubleshooting-and-FAQ) | Частые проблемы и вопросы |
 
-Для защиты от утечек в Chrome используйте V2Mac вместе с [**noleaker**](https://github.com/v2macapp/noleaker), бесплатным расширением того же автора.
-
 ## Сборка из исходников
 
 ```sh
@@ -106,10 +105,10 @@ xcodegen generate
 xcodebuild -project v2mac.xcodeproj -scheme v2mac -configuration Debug build
 ```
 
-Нужны Xcode 16.4 и [XcodeGen](https://github.com/yonaskolb/XcodeGen). Дизайн: [docs/SPEC.md](docs/SPEC.md). Тесты: `cd Packages/V2MacCore && swift test`. Сообщения об ошибках и pull request — в [Issues](https://github.com/v2macapp/v2mac/issues).
+Нужны Xcode 16.4 и [XcodeGen](https://github.com/yonaskolb/XcodeGen). Дизайн: [docs/SPEC.md](docs/SPEC.md). Тесты: `cd Packages/V2MacCore && swift test`. Сообщения об ошибках и pull request — в [Issues](https://github.com/rmnv/v2mac/issues).
 
 ## Лицензия
 
-[GPL-3.0](LICENSE). Включает [Xray-core](https://github.com/XTLS/Xray-core) (MPL-2.0); см. [THIRD_PARTY.md](THIRD_PARTY.md).
+[GPL-3.0](LICENSE). Авторство форка и исходного проекта указано в [NOTICE](NOTICE). Включает [Xray-core](https://github.com/XTLS/Xray-core) (MPL-2.0); см. [THIRD_PARTY.md](THIRD_PARTY.md).
 
 <p align="center"><sub>Если V2Mac вам помогает, ⭐ поможет другим его найти.</sub></p>

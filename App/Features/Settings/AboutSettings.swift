@@ -71,16 +71,11 @@ struct AboutSettings: View {
                 Text("Adds a link at /usr/local/bin/v2mac. V2Mac never replaces a file owned by another program.")
             }
             Section {
-                AboutLinkRow("LordVersa", systemImage: "person.crop.circle", detail: "github.com/LordVersA", url: AboutLinks.author)
-                AboutLinkRow("noleaker", systemImage: "eye.slash", detail: "Stops browser leaks", url: AboutLinks.noleaker)
+                AboutLinkRow("Anton Romanov", systemImage: "person.crop.circle", detail: "github.com/rmnv", url: AboutLinks.author)
             } header: {
-                Text("Developer")
+                Text("Fork author and maintainer")
             } footer: {
-                HStack(spacing: 4) {
-                    Text("Made with")
-                    Image(systemName: "heart.fill").foregroundStyle(.red).accessibilityLabel("love")
-                    Text("by LordVersa")
-                }
+                Text("macOS 15 compatibility fork by Anton Romanov")
             }
             Section {
                 LabeledContent("Xray-core") {
@@ -108,12 +103,11 @@ struct AboutSettings: View {
 /// Where the About tab and the About panel point. Add a row in `AboutSettings` for every new link.
 enum AboutLinks {
     static var tagline: String { String(localized: "A free, open-source Xray client for macOS.") }
-    static let repositoryText = "github.com/v2macapp/v2mac"
-    static let repository = URL(string: "https://github.com/v2macapp/v2mac")!
-    static let releases = URL(string: "https://github.com/v2macapp/v2mac/releases")!
-    static let newIssue = URL(string: "https://github.com/v2macapp/v2mac/issues/new?template=bug_report.md")!
-    static let author = URL(string: "https://github.com/LordVersA")!
-    static let noleaker = URL(string: "https://github.com/v2macapp/noleaker")!
+    static let repositoryText = "github.com/rmnv/v2mac"
+    static let repository = URL(string: "https://github.com/rmnv/v2mac")!
+    static let releases = URL(string: "https://github.com/rmnv/v2mac/releases")!
+    static let newIssue = URL(string: "https://github.com/rmnv/v2mac/issues/new?template=bug_report.md")!
+    static let author = URL(string: "https://github.com/rmnv")!
 
     /// The app menu's About panel, with the same tagline and links as the About tab.
     @MainActor static func showAboutPanel() {
@@ -130,8 +124,8 @@ enum AboutLinks {
         }
         let credits = NSMutableAttributedString(string: tagline + "\n", attributes: plain)
         credits.append(link(repositoryText, repository))
-        credits.append(NSAttributedString(string: "\n" + String(localized: "Made by") + " ", attributes: plain))
-        credits.append(link("LordVersa", author))
+        credits.append(NSAttributedString(string: "\n" + String(localized: "Fork by") + " ", attributes: plain))
+        credits.append(link("Anton Romanov", author))
         NSApp.orderFrontStandardAboutPanel(options: [.credits: credits])
         NSApp.activate()
     }

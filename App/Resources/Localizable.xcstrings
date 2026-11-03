@@ -4,6 +4,9 @@
     "" : {
       "shouldTranslate" : false
     },
+    "Anton Romanov" : {
+      "shouldTranslate" : false
+    },
     "Copy and Open GitHub" : {
       "localizations" : {
         "fa" : {
@@ -4967,28 +4970,6 @@
         }
       }
     },
-    "by LordVersa" : {
-      "localizations" : {
-        "fa" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "توسط LordVersa"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "от LordVersa"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "LordVersa 制作"
-          }
-        }
-      }
-    },
     "by the routing mode" : {
       "localizations" : {
         "fa" : {
@@ -7805,28 +7786,6 @@
         }
       }
     },
-    "Developer" : {
-      "localizations" : {
-        "fa" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "توسعه‌دهنده"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Разработчик"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "开发者"
-          }
-        }
-      }
-    },
     "Device ID" : {
       "localizations" : {
         "fa" : {
@@ -9959,6 +9918,26 @@
         }
       }
     },
+    "Fork author and maintainer" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Автор и мейнтейнер форка"
+          }
+        }
+      }
+    },
+    "Fork by" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Автор форка"
+          }
+        }
+      }
+    },
     "For %lld min" : {
       "localizations" : {
         "fa" : {
@@ -10201,7 +10180,7 @@
         }
       }
     },
-    "github.com/LordVersA" : {
+    "github.com/rmnv" : {
       "shouldTranslate" : false
     },
     "github.com/XTLS/Xray-core" : {
@@ -12167,27 +12146,12 @@
         }
       }
     },
-    "LordVersa" : {
-      "shouldTranslate" : false
-    },
-    "love" : {
+    "macOS 15 compatibility fork by Anton Romanov" : {
       "localizations" : {
-        "fa" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "عشق"
-          }
-        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "любовью"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "爱"
+            "value" : "Форк для macOS 15 от Антона Романова"
           }
         }
       }
@@ -12236,28 +12200,6 @@
         }
       }
     },
-    "Made by" : {
-      "localizations" : {
-        "fa" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ساخته"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Автор"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "作者"
-          }
-        }
-      }
-    },
     "Made on %@ with V2Mac %@: %lld subscriptions and %lld servers. What is missing here is added, nothing is removed, and the settings are replaced by the backup's." : {
       "localizations" : {
         "en" : {
@@ -12282,28 +12224,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "于 %1$@ 由 V2Mac %2$@ 创建：%3$lld 个订阅和 %4$lld 个服务器。此处缺少的内容会被添加，不会删除任何内容，设置将被备份中的设置替换。"
-          }
-        }
-      }
-    },
-    "Made with" : {
-      "localizations" : {
-        "fa" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ساخته‌شده با"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Сделано с"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "用"
           }
         }
       }
@@ -14133,9 +14053,6 @@
           }
         }
       }
-    },
-    "noleaker" : {
-      "shouldTranslate" : false
     },
     "none" : {
       "shouldTranslate" : false

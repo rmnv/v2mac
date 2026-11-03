@@ -6,14 +6,14 @@
 VLESS, REALITY, VMess, Trojan, Shadowsocks, Hysteria2 and WireGuard in a fast SwiftUI menu bar app for Apple Silicon.</p>
 
 <p align="center">
-  <a href="https://github.com/v2macapp/v2mac/releases/latest"><img src="https://img.shields.io/github/v/release/v2macapp/v2mac?label=release&color=0A84FF" alt="Latest release"></a>
-  <a href="https://github.com/v2macapp/v2mac/releases"><img src="https://img.shields.io/github/downloads/v2macapp/v2mac/total?color=34C759" alt="Total downloads"></a>
-  <a href="https://github.com/v2macapp/v2mac/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/v2macapp/v2mac/ci.yml?branch=main&label=CI" alt="CI status"></a>
+  <a href="https://github.com/rmnv/v2mac/releases/latest"><img src="https://img.shields.io/github/v/release/rmnv/v2mac?label=release&color=0A84FF" alt="Latest release"></a>
+  <a href="https://github.com/rmnv/v2mac/releases"><img src="https://img.shields.io/github/downloads/rmnv/v2mac/total?color=34C759" alt="Total downloads"></a>
+  <a href="https://github.com/rmnv/v2mac/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/rmnv/v2mac/ci.yml?branch=main&label=CI" alt="CI status"></a>
   <img src="https://img.shields.io/badge/macOS-15%2B-000000?logo=apple" alt="macOS 15 or later">
   <img src="https://img.shields.io/badge/Apple%20Silicon-arm64-555555" alt="Apple Silicon">
   <img src="https://img.shields.io/badge/Swift-6-F05138?logo=swift&logoColor=white" alt="Swift 6">
-  <a href="LICENSE"><img src="https://img.shields.io/github/license/v2macapp/v2mac?color=blue" alt="GPL-3.0 license"></a>
-  <a href="https://github.com/v2macapp/v2mac/stargazers"><img src="https://img.shields.io/github/stars/v2macapp/v2mac?style=flat&color=FFCC00" alt="GitHub stars"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/rmnv/v2mac?color=blue" alt="GPL-3.0 license"></a>
+  <a href="https://github.com/rmnv/v2mac/stargazers"><img src="https://img.shields.io/github/stars/rmnv/v2mac?style=flat&color=FFCC00" alt="GitHub stars"></a>
 </p>
 
 <p align="center">English | <a href="README.fa.md">فارسی</a> | <a href="README.zh.md">简体中文</a> | <a href="README.ru.md">Русский</a></p>
@@ -21,8 +21,7 @@ VLESS, REALITY, VMess, Trojan, Shadowsocks, Hysteria2 and WireGuard in a fast Sw
 <p align="center">
   <a href="#install">Install</a> ·
   <a href="#features">Features</a> ·
-  <a href="https://v2macapp.github.io"><b>Website</b></a> ·
-  <a href="https://github.com/v2macapp/v2mac/wiki"><b>Documentation</b></a> ·
+  <a href="https://github.com/rmnv/v2mac"><b>GitHub</b></a> ·
   <a href="#build-from-source">Build</a>
 </p>
 
@@ -33,6 +32,8 @@ Paste a subscription link, pick a server, and you have a local SOCKS5 + HTTP pro
 ## Differences from upstream
 
 This fork keeps V2Mac usable on current Macs that cannot run the upstream macOS 26 build.
+
+Fork author and maintainer: **[Anton Romanov](https://github.com/rmnv)**.
 
 | | This fork | Upstream V2Mac |
 |---|---|---|
@@ -96,8 +97,6 @@ The **[V2Mac Wiki](https://github.com/v2macapp/v2mac/wiki)** covers everything i
 | [Settings Reference](https://github.com/v2macapp/v2mac/wiki/Settings-Reference) | Every setting, backup, privacy |
 | [Troubleshooting and FAQ](https://github.com/v2macapp/v2mac/wiki/Troubleshooting-and-FAQ) | Common problems and questions |
 
-For leak protection in Chrome, pair V2Mac with [**noleaker**](https://github.com/v2macapp/noleaker), a free extension from the same author.
-
 ## Build from source
 
 ```sh
@@ -106,10 +105,10 @@ xcodegen generate
 xcodebuild -project v2mac.xcodeproj -scheme v2mac -configuration Debug build
 ```
 
-Needs Xcode 16.4 and [XcodeGen](https://github.com/yonaskolb/XcodeGen). Design: [docs/SPEC.md](docs/SPEC.md). Tests: `cd Packages/V2MacCore && swift test`. Bug reports and pull requests are welcome in [Issues](https://github.com/v2macapp/v2mac/issues).
+Needs Xcode 16.4 and [XcodeGen](https://github.com/yonaskolb/XcodeGen). Design: [docs/SPEC.md](docs/SPEC.md). Tests: `cd Packages/V2MacCore && swift test`. Bug reports and pull requests are welcome in [Issues](https://github.com/rmnv/v2mac/issues).
 
 ## License
 
-[GPL-3.0](LICENSE). Bundles [Xray-core](https://github.com/XTLS/Xray-core) (MPL-2.0); see [THIRD_PARTY.md](THIRD_PARTY.md).
+[GPL-3.0](LICENSE). See [NOTICE](NOTICE) for the fork and upstream attribution. Bundles [Xray-core](https://github.com/XTLS/Xray-core) (MPL-2.0); see [THIRD_PARTY.md](THIRD_PARTY.md).
 
 <p align="center"><sub>If V2Mac helps you, a ⭐ helps others find it.</sub></p>

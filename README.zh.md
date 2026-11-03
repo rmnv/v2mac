@@ -6,14 +6,14 @@
 VLESS、REALITY、VMess、Trojan、Shadowsocks、Hysteria2 和 WireGuard，集成在一个为 Apple Silicon 打造的快速 SwiftUI 菜单栏应用中。</p>
 
 <p align="center">
-  <a href="https://github.com/v2macapp/v2mac/releases/latest"><img src="https://img.shields.io/github/v/release/v2macapp/v2mac?label=release&color=0A84FF" alt="最新版本"></a>
-  <a href="https://github.com/v2macapp/v2mac/releases"><img src="https://img.shields.io/github/downloads/v2macapp/v2mac/total?color=34C759" alt="下载量"></a>
-  <a href="https://github.com/v2macapp/v2mac/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/v2macapp/v2mac/ci.yml?branch=main&label=CI" alt="CI 状态"></a>
-  <img src="https://img.shields.io/badge/macOS-26%2B-000000?logo=apple" alt="macOS 26 或更高">
+  <a href="https://github.com/rmnv/v2mac/releases/latest"><img src="https://img.shields.io/github/v/release/rmnv/v2mac?label=release&color=0A84FF" alt="最新版本"></a>
+  <a href="https://github.com/rmnv/v2mac/releases"><img src="https://img.shields.io/github/downloads/rmnv/v2mac/total?color=34C759" alt="下载量"></a>
+  <a href="https://github.com/rmnv/v2mac/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/rmnv/v2mac/ci.yml?branch=main&label=CI" alt="CI 状态"></a>
+  <img src="https://img.shields.io/badge/macOS-15%2B-000000?logo=apple" alt="macOS 15 或更高">
   <img src="https://img.shields.io/badge/Apple%20Silicon-arm64-555555" alt="Apple Silicon">
   <img src="https://img.shields.io/badge/Swift-6-F05138?logo=swift&logoColor=white" alt="Swift 6">
-  <a href="LICENSE"><img src="https://img.shields.io/github/license/v2macapp/v2mac?color=blue" alt="GPL-3.0 许可证"></a>
-  <a href="https://github.com/v2macapp/v2mac/stargazers"><img src="https://img.shields.io/github/stars/v2macapp/v2mac?style=flat&color=FFCC00" alt="GitHub 星标"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/rmnv/v2mac?color=blue" alt="GPL-3.0 许可证"></a>
+  <a href="https://github.com/rmnv/v2mac/stargazers"><img src="https://img.shields.io/github/stars/rmnv/v2mac?style=flat&color=FFCC00" alt="GitHub 星标"></a>
 </p>
 
 <p align="center"><a href="README.md">English</a> | <a href="README.fa.md">فارسی</a> | 简体中文 | <a href="README.ru.md">Русский</a></p>
@@ -21,24 +21,21 @@ VLESS、REALITY、VMess、Trojan、Shadowsocks、Hysteria2 和 WireGuard，集�
 <p align="center">
   <a href="#安装">安装</a> ·
   <a href="#功能">功能</a> ·
-  <a href="https://v2macapp.github.io"><b>网站</b></a> ·
-  <a href="https://github.com/v2macapp/v2mac/wiki/zh-Home"><b>文档</b></a> ·
+  <a href="https://github.com/rmnv/v2mac"><b>GitHub</b></a> ·
   <a href="#从源码构建">构建</a>
 </p>
 
 <p align="center"><img src="docs/images/screenshots/server-browsing.gif" alt="V2Mac 主窗口：按延迟排序服务器、打开收藏并搜索" width="760"></p>
 
-粘贴订阅链接、选择服务器，即可获得本地 SOCKS5 + HTTP 代理；或打开 TUN 模式让整台 Mac 走代理。V2Mac 是免费开源的 **macOS 版 v2rayN / V2RayX 替代品**，使用 SwiftUI 和 Liquid Glass 原生编写。无 Electron、无统计分析、无遥测。
+粘贴订阅链接、选择服务器，即可获得本地 SOCKS5 + HTTP 代理；或打开 TUN 模式让整台 Mac 走代理。V2Mac 是免费开源的 **macOS 版 v2rayN / V2RayX 替代品**，使用 SwiftUI 原生编写。无 Electron、无统计分析、无遥测。
+
+## 与上游版本的区别
+
+此分支由 **[Anton Romanov](https://github.com/rmnv)** 维护，支持 macOS 15 和 Xcode 16.4，使用标准 SwiftUI 材质，并默认向需要设备限制的服务商发送可编辑的 `x-hwid`。上游版本要求 macOS 26，并包含 Liquid Glass、控制中心开关和 Apple Intelligence 域名建议；这些 macOS 26 功能在此分支中不可用。
 
 ## 安装
 
-需要 **Apple Silicon** 上的 **macOS 26 或更高版本**。
-
-```sh
-brew install --cask v2macapp/tap/v2mac
-```
-
-也可从[最新版本](https://github.com/v2macapp/v2mac/releases/latest)下载 DMG。应用未经公证：首次启动时在 系统设置 → 隐私与安全性 中点击 **仍要打开**。详见[安装指南](https://github.com/v2macapp/v2mac/wiki/zh-Installation)。之后 V2Mac 会自动更新：只下载有变化的文件，并在退出时安装。
+需要 **Apple Silicon** 上的 **macOS 15 或更高版本**。请从此分支的 Releases 下载 DMG；上游 Homebrew cask 安装的是 macOS 26 版本。
 
 **快速开始：** 点击 **Add Subscription** 粘贴链接，双击服务器，然后使用 `127.0.0.1:10808`（SOCKS5 / HTTP），或打开 **System Proxy** 或 **TUN**。
 
@@ -52,7 +49,7 @@ brew install --cask v2macapp/tap/v2mac
 - **Proxifier 替代品：** 按应用分流并支持“仅当”条件、经由其他服务器或分组的规则、导入 `.ppx` 配置和实时连接视图。
 - **Cloudflare WARP：** 作为独立服务器或串接在你的服务器之后。
 - **安全沙盒（测试版）：** 在迷你虚拟机中运行应用，每个虚拟机使用自己的服务器，断线即断网，每个应用都是独立的 Mac 应用。仅在首次打开时下载。
-- **macOS 集成：** 菜单栏面板、快捷指令、Siri、Spotlight、控制中心、桌面小组件、Apple Intelligence 域名建议、Touch ID、通知、备份与恢复。支持英语、波斯语、中文和俄语。
+- **macOS 集成：** 菜单栏面板、快捷指令、Siri、Spotlight、桌面小组件、Touch ID、通知、备份与恢复。支持英语、波斯语、中文和俄语。
 
 ## 截图
 
@@ -85,8 +82,6 @@ brew install --cask v2macapp/tap/v2mac
 | [设置参考](https://github.com/v2macapp/v2mac/wiki/zh-Settings-Reference) | 所有设置、备份、隐私 |
 | [故障排除与常见问题](https://github.com/v2macapp/v2mac/wiki/zh-Troubleshooting-and-FAQ) | 常见问题与解答 |
 
-如需在 Chrome 中防止泄漏，可搭配同一作者的免费扩展 [**noleaker**](https://github.com/v2macapp/noleaker)。
-
 ## 从源码构建
 
 ```sh
@@ -95,10 +90,10 @@ xcodegen generate
 xcodebuild -project v2mac.xcodeproj -scheme v2mac -configuration Debug build
 ```
 
-需要 Xcode 26+ 和 [XcodeGen](https://github.com/yonaskolb/XcodeGen)。设计文档：[docs/SPEC.md](docs/SPEC.md)。测试：`cd Packages/V2MacCore && swift test`。欢迎在 [Issues](https://github.com/v2macapp/v2mac/issues) 提交问题和 PR。
+需要 Xcode 16.4 和 [XcodeGen](https://github.com/yonaskolb/XcodeGen)。设计文档：[docs/SPEC.md](docs/SPEC.md)。测试：`cd Packages/V2MacCore && swift test`。欢迎在 [Issues](https://github.com/rmnv/v2mac/issues) 提交问题和 PR。
 
 ## 许可证
 
-[GPL-3.0](LICENSE)。内置 [Xray-core](https://github.com/XTLS/Xray-core)（MPL-2.0）；见 [THIRD_PARTY.md](THIRD_PARTY.md)。
+[GPL-3.0](LICENSE)。分支及上游署名见 [NOTICE](NOTICE)。内置 [Xray-core](https://github.com/XTLS/Xray-core)（MPL-2.0）；见 [THIRD_PARTY.md](THIRD_PARTY.md)。
 
 <p align="center"><sub>如果 V2Mac 对你有帮助，点个 ⭐ 能让更多人发现它。</sub></p>

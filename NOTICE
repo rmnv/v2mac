@@ -1,0 +1,12 @@
+V2Mac macOS 15 compatibility fork
+
+Fork changes and maintenance: Copyright (C) 2026 Anton Romanov.
+Repository: https://github.com/rmnv/v2mac
+
+This project is a modified version of V2Mac:
+https://github.com/v2macapp/v2mac
+
+The original Git history is preserved and identifies the authors and contributors
+of the code on which this fork is based. This modified version is distributed under
+the GNU General Public License version 3; see LICENSE. Third-party components and
+their licences are listed in THIRD_PARTY.md.
