@@ -164,7 +164,7 @@ enum Prefs {
             "outboundInterface": "",
             "autoUpdateSubscriptions": true,
             "subscriptionUpdateViaProxy": false,
-            "sendSubscriptionHWID": false,
+            "sendSubscriptionHWID": true,
             "defaultIntervalHours": 12,
             "latencyURL": "https://www.wikipedia.org",
             "latencyTimeout": 8.0,

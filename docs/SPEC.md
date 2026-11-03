@@ -351,7 +351,7 @@ different display names share a fingerprint.
 
 - `GET` with `User-Agent: v2mac/<version>` (configurable), 15 s timeout,
   redirects followed, 10 MB body cap, any 2xx accepted.
-- Optional provider device identity, disabled by default: a persistent editable UUID in
+- Provider device identity, enabled by default: a persistent editable UUID in
   `x-hwid`, plus `x-device-os: macOS`, `x-ver-os`, and `x-device-model: Mac`. The same
   headers are sent on initial fetch, manual refresh, automatic refresh, and User-Agent probes.
 - Route **without proxy**: default `URLSession`.
