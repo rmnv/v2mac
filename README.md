@@ -9,7 +9,7 @@ VLESS, REALITY, VMess, Trojan, Shadowsocks, Hysteria2 and WireGuard in a fast Sw
   <a href="https://github.com/v2macapp/v2mac/releases/latest"><img src="https://img.shields.io/github/v/release/v2macapp/v2mac?label=release&color=0A84FF" alt="Latest release"></a>
   <a href="https://github.com/v2macapp/v2mac/releases"><img src="https://img.shields.io/github/downloads/v2macapp/v2mac/total?color=34C759" alt="Total downloads"></a>
   <a href="https://github.com/v2macapp/v2mac/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/v2macapp/v2mac/ci.yml?branch=main&label=CI" alt="CI status"></a>
-  <img src="https://img.shields.io/badge/macOS-26%2B-000000?logo=apple" alt="macOS 26 or later">
+  <img src="https://img.shields.io/badge/macOS-15%2B-000000?logo=apple" alt="macOS 15 or later">
   <img src="https://img.shields.io/badge/Apple%20Silicon-arm64-555555" alt="Apple Silicon">
   <img src="https://img.shields.io/badge/Swift-6-F05138?logo=swift&logoColor=white" alt="Swift 6">
   <a href="LICENSE"><img src="https://img.shields.io/github/license/v2macapp/v2mac?color=blue" alt="GPL-3.0 license"></a>
@@ -28,17 +28,28 @@ VLESS, REALITY, VMess, Trojan, Shadowsocks, Hysteria2 and WireGuard in a fast Sw
 
 <p align="center"><img src="docs/images/screenshots/server-browsing.gif" alt="V2Mac main window: sorting servers by delay, opening Favorites and searching" width="760"></p>
 
-Paste a subscription link, pick a server, and you have a local SOCKS5 + HTTP proxy, or turn on TUN mode to send the whole Mac through it. V2Mac is a free, open-source **v2rayN / V2RayX alternative for macOS**, written natively in SwiftUI with Liquid Glass. No Electron, no analytics, no telemetry.
+Paste a subscription link, pick a server, and you have a local SOCKS5 + HTTP proxy, or turn on TUN mode to send the whole Mac through it. V2Mac is a free, open-source **v2rayN / V2RayX alternative for macOS**, written natively in SwiftUI. No Electron, no analytics, no telemetry.
+
+## Differences from upstream
+
+This fork keeps V2Mac usable on current Macs that cannot run the upstream macOS 26 build.
+
+| | This fork | Upstream V2Mac |
+|---|---|---|
+| Minimum system | macOS 15 | macOS 26 |
+| Build tools | Xcode 16.4, Swift 6.1 | Xcode 26+, Swift 6.2 |
+| Interface | Standard SwiftUI materials and controls | Liquid Glass |
+| Provider device limits | Sends an editable `x-hwid` and macOS device metadata by default | No HWID setting |
+| Control Center switch | Unavailable because its API is absent from macOS 15 | Available |
+| Apple Intelligence domain suggestions | Unavailable on macOS 15 | Available |
+
+Apart from these compatibility changes, the proxy core, subscriptions, TUN, system proxy, routing rules and server formats follow upstream V2Mac.
 
 ## Install
 
-Requires **macOS 26 or later** on **Apple Silicon**.
+Requires **macOS 15 or later** on **Apple Silicon**.
 
-```sh
-brew install --cask v2macapp/tap/v2mac
-```
-
-Or download the DMG from the [latest release](https://github.com/v2macapp/v2mac/releases/latest). It is not notarized: on first launch use **Open Anyway** in System Settings → Privacy & Security. Details in the [installation guide](https://github.com/v2macapp/v2mac/wiki/Installation). After that V2Mac updates itself: it downloads only the files that changed and installs them when you quit.
+Download the DMG from this fork's Releases. The upstream Homebrew cask and upstream Releases contain the macOS 26 build, not this compatibility fork. The app is not notarized: on first launch use **Open Anyway** in System Settings → Privacy & Security.
 
 **Quick start:** click **Add Subscription** and paste your link, double-click a server, then use `127.0.0.1:10808` (SOCKS5 / HTTP) or switch on **System Proxy** or **TUN**.
 
@@ -52,7 +63,7 @@ Or download the DMG from the [latest release](https://github.com/v2macapp/v2mac/
 - **Proxifier alternative:** per-app rules with "Only when" conditions, rules via another server or group, `.ppx` profile import and a live Connections view.
 - **Cloudflare WARP:** as its own server or chained behind yours.
 - **Secure Sandbox (beta):** run apps in mini VMs, each with its own server and fail-closed, every app as its own Mac app. Downloaded only when you first open it.
-- **macOS:** menu bar panel, Shortcuts, Siri, Spotlight, Control Center, a desktop widget, Apple Intelligence domain suggestions, Touch ID, notifications, backup and restore. English, Persian, Chinese and Russian.
+- **macOS:** menu bar panel, Shortcuts, Siri, Spotlight, a desktop widget, Touch ID, notifications, backup and restore. English, Persian, Chinese and Russian.
 
 ## Screenshots
 
@@ -95,7 +106,7 @@ xcodegen generate
 xcodebuild -project v2mac.xcodeproj -scheme v2mac -configuration Debug build
 ```
 
-Needs Xcode 26+ and [XcodeGen](https://github.com/yonaskolb/XcodeGen). Design: [docs/SPEC.md](docs/SPEC.md). Tests: `cd Packages/V2MacCore && swift test`. Bug reports and pull requests are welcome in [Issues](https://github.com/v2macapp/v2mac/issues).
+Needs Xcode 16.4 and [XcodeGen](https://github.com/yonaskolb/XcodeGen). Design: [docs/SPEC.md](docs/SPEC.md). Tests: `cd Packages/V2MacCore && swift test`. Bug reports and pull requests are welcome in [Issues](https://github.com/v2macapp/v2mac/issues).
 
 ## License
 

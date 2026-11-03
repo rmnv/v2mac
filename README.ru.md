@@ -9,7 +9,7 @@ VLESS, REALITY, VMess, Trojan, Shadowsocks, Hysteria2 и WireGuard в быстр
   <a href="https://github.com/v2macapp/v2mac/releases/latest"><img src="https://img.shields.io/github/v/release/v2macapp/v2mac?label=release&color=0A84FF" alt="Последний релиз"></a>
   <a href="https://github.com/v2macapp/v2mac/releases"><img src="https://img.shields.io/github/downloads/v2macapp/v2mac/total?color=34C759" alt="Загрузки"></a>
   <a href="https://github.com/v2macapp/v2mac/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/v2macapp/v2mac/ci.yml?branch=main&label=CI" alt="Статус CI"></a>
-  <img src="https://img.shields.io/badge/macOS-26%2B-000000?logo=apple" alt="macOS 26 или новее">
+  <img src="https://img.shields.io/badge/macOS-15%2B-000000?logo=apple" alt="macOS 15 или новее">
   <img src="https://img.shields.io/badge/Apple%20Silicon-arm64-555555" alt="Apple Silicon">
   <img src="https://img.shields.io/badge/Swift-6-F05138?logo=swift&logoColor=white" alt="Swift 6">
   <a href="LICENSE"><img src="https://img.shields.io/github/license/v2macapp/v2mac?color=blue" alt="Лицензия GPL-3.0"></a>
@@ -28,17 +28,28 @@ VLESS, REALITY, VMess, Trojan, Shadowsocks, Hysteria2 и WireGuard в быстр
 
 <p align="center"><img src="docs/images/screenshots/server-browsing.gif" alt="Главное окно V2Mac: сортировка серверов по задержке, избранное и поиск" width="760"></p>
 
-Вставьте ссылку подписки, выберите сервер — и у вас локальный прокси SOCKS5 + HTTP; или включите режим TUN, чтобы через него шёл весь Mac. V2Mac — бесплатная **альтернатива v2rayN / V2RayX для macOS** с открытым кодом, написанная нативно на SwiftUI с Liquid Glass. Без Electron, без аналитики, без телеметрии.
+Вставьте ссылку подписки, выберите сервер — и у вас локальный прокси SOCKS5 + HTTP; или включите режим TUN, чтобы через него шёл весь Mac. V2Mac — бесплатная **альтернатива v2rayN / V2RayX для macOS** с открытым кодом, написанная нативно на SwiftUI. Без Electron, без аналитики, без телеметрии.
+
+## Отличия от оригинального V2Mac
+
+Этот форк сохраняет работоспособность V2Mac на компьютерах Mac, которые не могут запустить оригинальную сборку для macOS 26.
+
+| | Этот форк | Оригинальный V2Mac |
+|---|---|---|
+| Минимальная система | macOS 15 | macOS 26 |
+| Инструменты сборки | Xcode 16.4, Swift 6.1 | Xcode 26+, Swift 6.2 |
+| Интерфейс | Стандартные материалы и элементы SwiftUI | Liquid Glass |
+| Ограничения устройств провайдера | По умолчанию отправляет редактируемый `x-hwid` и данные macOS | Настройки HWID нет |
+| Переключатель в Пункте управления | Недоступен из-за отсутствия API в macOS 15 | Доступен |
+| Подсказки доменов Apple Intelligence | Недоступны в macOS 15 | Доступны |
+
+В остальном прокси-ядро, подписки, TUN, системный прокси, правила маршрутизации и форматы серверов соответствуют оригинальному V2Mac.
 
 ## Установка
 
-Нужна **macOS 26 или новее** на **Apple Silicon**.
+Нужна **macOS 15 или новее** на **Apple Silicon**.
 
-```sh
-brew install --cask v2macapp/tap/v2mac
-```
-
-Или скачайте DMG из [последнего релиза](https://github.com/v2macapp/v2mac/releases/latest). Приложение не нотаризовано: при первом запуске нажмите **Всё равно открыть** в Системные настройки → Конфиденциальность и безопасность. Подробнее в [руководстве по установке](https://github.com/v2macapp/v2mac/wiki/ru-Installation). Дальше V2Mac обновляется сама: загружает только изменившиеся файлы и устанавливает их при выходе.
+Скачайте DMG из Releases этого форка. Homebrew cask и Releases оригинального проекта содержат сборку для macOS 26, а не этот совместимый форк. Приложение не нотаризовано: при первом запуске нажмите **Всё равно открыть** в Системные настройки → Конфиденциальность и безопасность.
 
 **Быстрый старт:** нажмите **Add Subscription** и вставьте ссылку, дважды щёлкните сервер, затем используйте `127.0.0.1:10808` (SOCKS5 / HTTP) или включите **System Proxy** или **TUN**.
 
@@ -52,7 +63,7 @@ brew install --cask v2macapp/tap/v2mac
 - **Замена Proxifier:** правила для приложений с условиями «Только когда», правила через другой сервер или группу, импорт профилей `.ppx` и живой список соединений.
 - **Cloudflare WARP:** как отдельный сервер или в цепочке за вашим.
 - **Безопасная песочница (бета):** приложения в мини-ВМ, у каждой свой сервер и без утечек при обрыве; каждое приложение — отдельное приложение Mac. Скачивается только при первом открытии.
-- **macOS:** панель в строке меню, Команды, Siri, Spotlight, Пункт управления, виджет на рабочем столе, подсказки доменов Apple Intelligence, Touch ID, уведомления, резервное копирование. Английский, персидский, китайский и русский.
+- **macOS:** панель в строке меню, Команды, Siri, Spotlight, виджет на рабочем столе, Touch ID, уведомления, резервное копирование. Английский, персидский, китайский и русский.
 
 ## Скриншоты
 
@@ -95,7 +106,7 @@ xcodegen generate
 xcodebuild -project v2mac.xcodeproj -scheme v2mac -configuration Debug build
 ```
 
-Нужны Xcode 26+ и [XcodeGen](https://github.com/yonaskolb/XcodeGen). Дизайн: [docs/SPEC.md](docs/SPEC.md). Тесты: `cd Packages/V2MacCore && swift test`. Сообщения об ошибках и pull request — в [Issues](https://github.com/v2macapp/v2mac/issues).
+Нужны Xcode 16.4 и [XcodeGen](https://github.com/yonaskolb/XcodeGen). Дизайн: [docs/SPEC.md](docs/SPEC.md). Тесты: `cd Packages/V2MacCore && swift test`. Сообщения об ошибках и pull request — в [Issues](https://github.com/v2macapp/v2mac/issues).
 
 ## Лицензия
 
