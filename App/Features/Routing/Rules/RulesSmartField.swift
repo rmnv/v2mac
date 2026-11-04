@@ -1,4 +1,5 @@
-#if canImport(FoundationModels)
+// This fork targets macOS 15. A macOS 26-only derivative may opt in with this build condition.
+#if V2MAC_FOUNDATION_MODELS
 import FoundationModels
 #endif
 import SwiftUI
@@ -145,7 +146,7 @@ struct SmartField: View {
 
     /// On-device Apple Intelligence names the domains a service uses.
     private func suggestDomains() {
-#if canImport(FoundationModels)
+#if V2MAC_FOUNDATION_MODELS
         let request = text.trimmingCharacters(in: .whitespaces)
         suggesting = true
         Task {
@@ -163,7 +164,7 @@ struct SmartField: View {
     }
 
     private static var domainSuggestionsAvailable: Bool {
-#if canImport(FoundationModels)
+#if V2MAC_FOUNDATION_MODELS
         SystemLanguageModel.default.isAvailable
 #else
         false
@@ -182,7 +183,7 @@ struct SmartField: View {
         """
 }
 
-#if canImport(FoundationModels)
+#if V2MAC_FOUNDATION_MODELS
 @Generable
 struct SuggestedDomains {
     @Guide(description: "Every domain the services use: their main site, video and image servers (CDNs), APIs and short links", .count(1...20))
