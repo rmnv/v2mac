@@ -22,7 +22,8 @@ VLESS, REALITY, VMess, Trojan, Shadowsocks, Hysteria2 и WireGuard в быстр
   <a href="#установка">Установка</a> ·
   <a href="#возможности">Возможности</a> ·
   <a href="https://github.com/rmnv/v2mac"><b>GitHub</b></a> ·
-  <a href="#сборка-из-исходников">Сборка</a>
+  <a href="#сборка-из-исходников">Сборка</a> ·
+  <a href="#публикация-форка">Публикация</a>
 </p>
 
 <p align="center"><img src="docs/images/screenshots/server-browsing.gif" alt="Главное окно V2Mac: сортировка серверов по задержке, избранное и поиск" width="760"></p>
@@ -45,6 +46,16 @@ VLESS, REALITY, VMess, Trojan, Shadowsocks, Hysteria2 и WireGuard в быстр
 | Подсказки доменов Apple Intelligence | Недоступны в macOS 15 | Доступны |
 
 В остальном прокси-ядро, подписки, TUN, системный прокси, правила маршрутизации и форматы серверов соответствуют оригинальному V2Mac.
+
+Что изменено в исходном коде этого форка:
+
+- deployment target снижен до macOS 15, а проект адаптирован для сборки в Xcode 16.4 со Swift 6.1;
+- интерфейсные API macOS 26 заменены совместимыми материалами и элементами SwiftUI;
+- расширение Пункта управления и подсказки Apple Intelligence исключены из сборки, потому что нужных API нет в macOS 15;
+- при обновлении подписки по умолчанию отправляются заголовки `x-hwid`, `x-device-os`, `x-ver-os` и `x-device-model` для провайдеров с привязкой устройства;
+- HWID хранится локально, его можно отключить, изменить или сгенерировать заново в **Settings → Servers**;
+- ссылки на обновления, Releases, Issues и сведения об авторе направлены на `rmnv/v2mac`;
+- исходные bundle ID и каталог данных сохранены намеренно, чтобы существующие настройки, Keychain, helper и резервные копии оставались совместимыми.
 
 ## Установка
 
@@ -106,6 +117,76 @@ xcodebuild -project v2mac.xcodeproj -scheme v2mac -configuration Debug build
 ```
 
 Нужны Xcode 16.4 и [XcodeGen](https://github.com/yonaskolb/XcodeGen). Дизайн: [docs/SPEC.md](docs/SPEC.md). Тесты: `cd Packages/V2MacCore && swift test`. Сообщения об ошибках и pull request — в [Issues](https://github.com/rmnv/v2mac/issues).
+
+## Публикация форка
+
+### 1. Создание форка на GitHub
+
+1. Войдите на GitHub под аккаунтом `rmnv`.
+2. Откройте [`v2macapp/v2mac`](https://github.com/v2macapp/v2mac), нажмите **Fork**, выберите владельца `rmnv` и имя `v2mac`.
+3. Убедитесь, что локальные remotes разделены: `origin` должен указывать на ваш форк, а `upstream` — на оригинал.
+
+```sh
+git remote -v
+
+# Если remotes ещё не настроены:
+git remote rename origin upstream
+git remote add origin git@github.com:rmnv/v2mac.git
+```
+
+В этом рабочем каталоге remotes уже настроены, поэтому повторять две последние команды не нужно.
+
+### 2. Публикация кода
+
+Сначала опубликуйте рабочую ветку, затем обновите `main` форка тем же проверенным состоянием:
+
+```sh
+git push -u origin macos-15-support
+git push origin macos-15-support:main
+```
+
+Команды не используют принудительную перезапись истории. Если GitHub отклонит обновление `main`, сначала получите изменения оригинала, объедините их и повторно запустите тесты:
+
+```sh
+git fetch upstream
+git switch macos-15-support
+git merge upstream/main
+cd Packages/V2MacCore && swift test && cd ../..
+```
+
+После разрешения возможных конфликтов снова выполните обе команды `git push` выше. Не публикуйте ссылки подписок, токены провайдера, сертификаты и ключи подписи.
+
+### 3. Сборка DMG
+
+```sh
+Scripts/make-dmg.sh
+cd dist
+shasum -a 256 -c V2Mac-0.1.0.dmg.sha256
+cd ..
+```
+
+Без сертификата скрипт создаёт ad-hoc подписанную сборку: macOS потребует **Всё равно открыть**. Для публичного распространения лучше использовать Developer ID и notarization; скрипт поддерживает их через `SIGN_IDENTITY` и заранее созданный профиль `NOTARY_PROFILE`:
+
+```sh
+SIGN_IDENTITY="Developer ID Application: Your Name (TEAMID)" \
+NOTARY_PROFILE="v2mac-notary" \
+Scripts/make-dmg.sh
+```
+
+Не записывайте пароли или ключи в репозиторий — профиль notarization должен храниться в Keychain.
+
+### 4. GitHub Release
+
+Создайте отдельный тег форка и отправьте его на GitHub:
+
+```sh
+git tag -a v0.1.0-macos15 -m "V2Mac 0.1.0 for macOS 15"
+git push origin v0.1.0-macos15
+```
+
+На странице **Releases → Draft a new release** выберите этот тег, приложите `dist/V2Mac-0.1.0.dmg` и `dist/V2Mac-0.1.0.dmg.sha256`, опишите отличия из раздела выше и опубликуйте релиз. При следующей версии сначала измените `MARKETING_VERSION` в `project.yml`, а затем используйте новый тег и соответствующее имя DMG.
+
+Форк распространяется по GPL-3.0: оставляйте `LICENSE`, `NOTICE`, историю Git и доступ к исходному коду опубликованной версии.
 
 ## Лицензия
 

@@ -22,7 +22,8 @@ VLESS, REALITY, VMess, Trojan, Shadowsocks, Hysteria2 and WireGuard in a fast Sw
   <a href="#install">Install</a> ·
   <a href="#features">Features</a> ·
   <a href="https://github.com/rmnv/v2mac"><b>GitHub</b></a> ·
-  <a href="#build-from-source">Build</a>
+  <a href="#build-from-source">Build</a> ·
+  <a href="#publishing-the-fork">Publish</a>
 </p>
 
 <p align="center"><img src="docs/images/screenshots/server-browsing.gif" alt="V2Mac main window: sorting servers by delay, opening Favorites and searching" width="760"></p>
@@ -45,6 +46,16 @@ Fork author and maintainer: **[Anton Romanov](https://github.com/rmnv)**.
 | Apple Intelligence domain suggestions | Unavailable on macOS 15 | Available |
 
 Apart from these compatibility changes, the proxy core, subscriptions, TUN, system proxy, routing rules and server formats follow upstream V2Mac.
+
+The source changes in this fork are:
+
+- the deployment target is macOS 15, with the project adapted for Xcode 16.4 and Swift 6.1;
+- macOS 26-only interface APIs are replaced with compatible SwiftUI materials and controls;
+- the Control Center extension and Apple Intelligence suggestions are excluded because their APIs are unavailable on macOS 15;
+- subscription updates send `x-hwid`, `x-device-os`, `x-ver-os` and `x-device-model` by default for providers that bind subscriptions to a device;
+- the HWID is stored locally and can be disabled, edited or regenerated in **Settings → Servers**;
+- update, Release, Issues and author links point to `rmnv/v2mac`;
+- the original bundle IDs and data directory are intentionally retained so existing settings, Keychain entries, helper installation and backups remain compatible.
 
 ## Install
 
@@ -106,6 +117,76 @@ xcodebuild -project v2mac.xcodeproj -scheme v2mac -configuration Debug build
 ```
 
 Needs Xcode 16.4 and [XcodeGen](https://github.com/yonaskolb/XcodeGen). Design: [docs/SPEC.md](docs/SPEC.md). Tests: `cd Packages/V2MacCore && swift test`. Bug reports and pull requests are welcome in [Issues](https://github.com/rmnv/v2mac/issues).
+
+## Publishing the fork
+
+### 1. Create the GitHub fork
+
+1. Sign in to GitHub as `rmnv`.
+2. Open [`v2macapp/v2mac`](https://github.com/v2macapp/v2mac), click **Fork**, and select `rmnv` as the owner and `v2mac` as the repository name.
+3. Verify that local remotes are separated: `origin` must point to your fork and `upstream` to the original project.
+
+```sh
+git remote -v
+
+# Run only if the remotes have not been configured yet:
+git remote rename origin upstream
+git remote add origin git@github.com:rmnv/v2mac.git
+```
+
+The remotes are already configured in this working copy, so the final two commands do not need to be repeated here.
+
+### 2. Publish the code
+
+Push the working branch first, then update the fork's `main` with the same tested commit:
+
+```sh
+git push -u origin macos-15-support
+git push origin macos-15-support:main
+```
+
+These commands do not force-rewrite history. If GitHub rejects the `main` update, fetch and merge upstream before testing again:
+
+```sh
+git fetch upstream
+git switch macos-15-support
+git merge upstream/main
+cd Packages/V2MacCore && swift test && cd ../..
+```
+
+Resolve any conflicts and repeat both `git push` commands. Never publish subscription URLs, provider tokens, signing certificates or private keys.
+
+### 3. Build the DMG
+
+```sh
+Scripts/make-dmg.sh
+cd dist
+shasum -a 256 -c V2Mac-0.1.0.dmg.sha256
+cd ..
+```
+
+Without a certificate the script creates an ad-hoc signed build, so macOS will require **Open Anyway**. For public distribution, Developer ID signing and notarization are preferable. The script accepts `SIGN_IDENTITY` and a previously created `NOTARY_PROFILE`:
+
+```sh
+SIGN_IDENTITY="Developer ID Application: Your Name (TEAMID)" \
+NOTARY_PROFILE="v2mac-notary" \
+Scripts/make-dmg.sh
+```
+
+Do not store passwords or keys in the repository; the notarization profile belongs in Keychain.
+
+### 4. Create a GitHub Release
+
+Create a fork-specific tag and push it:
+
+```sh
+git tag -a v0.1.0-macos15 -m "V2Mac 0.1.0 for macOS 15"
+git push origin v0.1.0-macos15
+```
+
+On **Releases → Draft a new release**, choose the tag, attach `dist/V2Mac-0.1.0.dmg` and `dist/V2Mac-0.1.0.dmg.sha256`, summarize the differences listed above, and publish. For the next release, first change `MARKETING_VERSION` in `project.yml`, then use a new tag and the matching DMG name.
+
+This fork remains GPL-3.0 software: retain `LICENSE`, `NOTICE`, Git history and access to the source used for every published binary.
 
 ## License
 
