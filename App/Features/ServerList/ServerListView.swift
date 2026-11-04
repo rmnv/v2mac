@@ -138,7 +138,11 @@ struct ServerListView: View {
         ToolbarItem {
             NotificationsButton(notifications: model.notifications) { model.windowRequest = $0 }
         }
-        ToolbarSpacer(.fixed)
+        #if compiler(>=6.2)
+        if #available(macOS 26, *) {
+            ToolbarSpacer(.fixed)
+        }
+        #endif
         ToolbarItem {
             Button { model.showAddSheet = true } label: {
                 Label("Add", systemImage: "plus")
