@@ -22,7 +22,8 @@ VLESS، REALITY، VMess، Trojan، Shadowsocks، Hysteria2 و WireGuard در ی�
   <a href="#نصب">نصب</a> ·
   <a href="#امکانات">امکانات</a> ·
   <a href="https://github.com/rmnv/v2mac"><b>GitHub</b></a> ·
-  <a href="#ساخت-از-سورس">ساخت</a>
+  <a href="#ساخت-از-سورس">ساخت</a> ·
+  <a href="#انتشار-فورک">انتشار</a>
 </p>
 
 <p align="center"><img src="docs/images/screenshots/server-browsing.gif" alt="پنجرهٔ اصلی V2Mac: مرتب‌سازی سرورها بر اساس تأخیر، باز کردن علاقه‌مندی‌ها و جستجو" width="760"></p>
@@ -34,6 +35,16 @@ VLESS، REALITY، VMess، Trojan، Shadowsocks، Hysteria2 و WireGuard در ی�
 ## تفاوت با نسخهٔ اصلی
 
 این فورک توسط **[Anton Romanov](https://github.com/rmnv)** نگهداری می‌شود و از macOS 15 و Xcode 16.4 پشتیبانی می‌کند. رابط از مواد استاندارد SwiftUI استفاده می‌کند و برای سرویس‌دهنده‌های دارای محدودیت دستگاه، `x-hwid` قابل‌ویرایش را به‌طور پیش‌فرض می‌فرستد. قابلیت‌های مخصوص macOS 26 مانند Liquid Glass، کنترل Control Center و پیشنهاد دامنهٔ Apple Intelligence در این فورک وجود ندارند.
+
+تغییرات دقیق سورس در این فورک:
+
+- deployment target به macOS 15 کاهش یافته و پروژه برای Xcode 16.4 و Swift 6.1 سازگار شده است؛
+- APIهای رابط مخصوص macOS 26 با مواد و کنترل‌های سازگار SwiftUI جایگزین شده‌اند؛
+- افزونهٔ Control Center و پیشنهادهای Apple Intelligence به دلیل نبود APIهای لازم در macOS 15 از ساخت حذف شده‌اند؛
+- هنگام به‌روزرسانی اشتراک، هدرهای `x-hwid`، `x-device-os`، `x-ver-os` و `x-device-model` برای سرویس‌دهنده‌های دارای اتصال به دستگاه به‌طور پیش‌فرض ارسال می‌شوند؛
+- HWID فقط به‌صورت محلی ذخیره می‌شود و در **Settings → Servers** می‌توان آن را غیرفعال، ویرایش یا دوباره تولید کرد؛
+- لینک‌های به‌روزرسانی، Releases، Issues و نویسنده به `rmnv/v2mac` اشاره می‌کنند؛
+- bundle IDها و پوشهٔ دادهٔ اصلی عمداً حفظ شده‌اند تا تنظیمات، Keychain، helper و نسخه‌های پشتیبان قبلی سازگار بمانند.
 
 ## نصب
 
@@ -105,6 +116,100 @@ xcodebuild -project v2mac.xcodeproj -scheme v2mac -configuration Debug build
 <div dir="rtl">
 
 به Xcode 16.4 و [XcodeGen](https://github.com/yonaskolb/XcodeGen) نیاز دارد. طراحی: [docs/SPEC.md](docs/SPEC.md). تست‌ها: `cd Packages/V2MacCore && swift test`. گزارش مشکل و pull request در [Issues](https://github.com/rmnv/v2mac/issues).
+
+## انتشار فورک
+
+### ۱. ساخت fork در GitHub
+
+1. با حساب `rmnv` وارد GitHub شوید.
+2. مخزن [`v2macapp/v2mac`](https://github.com/v2macapp/v2mac) را باز کنید، **Fork** را بزنید و `rmnv` را به‌عنوان مالک و `v2mac` را به‌عنوان نام انتخاب کنید.
+3. بررسی کنید که `origin` به فورک شما و `upstream` به پروژهٔ اصلی اشاره کند.
+
+</div>
+
+```sh
+git remote -v
+
+# فقط اگر remoteها هنوز تنظیم نشده‌اند:
+git remote rename origin upstream
+git remote add origin git@github.com:rmnv/v2mac.git
+```
+
+<div dir="rtl">
+
+در این پوشهٔ کاری remoteها از قبل تنظیم شده‌اند؛ دو دستور آخر را دوباره اجرا نکنید.
+
+### ۲. انتشار کد
+
+ابتدا شاخهٔ کاری و سپس همان commit آزمایش‌شده را در `main` فورک منتشر کنید:
+
+</div>
+
+```sh
+git push -u origin macos-15-support
+git push origin macos-15-support:main
+```
+
+<div dir="rtl">
+
+این دستورها تاریخچه را اجباری بازنویسی نمی‌کنند. اگر GitHub به‌روزرسانی `main` را رد کرد، ابتدا upstream را ادغام و دوباره آزمایش کنید:
+
+</div>
+
+```sh
+git fetch upstream
+git switch macos-15-support
+git merge upstream/main
+cd Packages/V2MacCore && swift test && cd ../..
+```
+
+<div dir="rtl">
+
+پس از حل conflictهای احتمالی، هر دو دستور `git push` را دوباره اجرا کنید. لینک اشتراک، توکن سرویس‌دهنده، گواهی امضا یا کلید خصوصی را منتشر نکنید.
+
+### ۳. ساخت DMG
+
+</div>
+
+```sh
+Scripts/make-dmg.sh
+cd dist
+shasum -a 256 -c V2Mac-0.1.0.dmg.sha256
+cd ..
+```
+
+<div dir="rtl">
+
+بدون گواهی، اسکریپت یک ساخت ad-hoc امضاشده می‌سازد و macOS گزینهٔ **Open Anyway** را درخواست می‌کند. برای انتشار عمومی بهتر است از Developer ID و notarization استفاده کنید؛ اسکریپت `SIGN_IDENTITY` و پروفایل از پیش ساخته‌شدهٔ `NOTARY_PROFILE` را می‌پذیرد:
+
+</div>
+
+```sh
+SIGN_IDENTITY="Developer ID Application: Your Name (TEAMID)" \
+NOTARY_PROFILE="v2mac-notary" \
+Scripts/make-dmg.sh
+```
+
+<div dir="rtl">
+
+رمز یا کلید را در مخزن ذخیره نکنید؛ پروفایل notarization باید در Keychain باشد.
+
+### ۴. ساخت GitHub Release
+
+یک tag مخصوص فورک بسازید و ارسال کنید:
+
+</div>
+
+```sh
+git tag -a v0.1.0-macos15 -m "V2Mac 0.1.0 for macOS 15"
+git push origin v0.1.0-macos15
+```
+
+<div dir="rtl">
+
+در **Releases → Draft a new release** این tag را انتخاب کنید، فایل‌های `dist/V2Mac-0.1.0.dmg` و `dist/V2Mac-0.1.0.dmg.sha256` را پیوست کنید، تفاوت‌های بالا را بنویسید و release را منتشر کنید. برای نسخهٔ بعد، ابتدا `MARKETING_VERSION` را در `project.yml` تغییر دهید و سپس tag و نام DMG جدید را به‌کار ببرید.
+
+این فورک تحت GPL-3.0 باقی می‌ماند؛ `LICENSE`، `NOTICE`، تاریخچهٔ Git و دسترسی به سورس هر فایل باینری منتشرشده را حفظ کنید.
 
 ## مجوز
 
