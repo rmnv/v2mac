@@ -26,14 +26,16 @@ public enum TunHelper {
     }
 
     /// Arguments: app pid, state directory, core binary, its SHA-256, forwarder config (the JSON
-    /// itself), root directory, the kill switch's pf rules, its anchor and its marker file. The
-    /// body is one `{ }` group, so the shell has read all of it before running any of it.
+    /// itself), root directory, the kill switch's pf rules, its anchor, its marker file and the
+    /// core's `tun-in` port. The body is one `{ }` group, so the shell has read all of it before
+    /// running any of it.
     public static let script = #"""
     # V2Mac root helper. Runs as root for one app session.
     {
     APP_PID="$1"; STATE_DIR="$2"; XRAY_SRC="$3"; XRAY_SHA="$4"; CONFIG="$5"; ROOT_DIR="$6"
-    KS_RULES="$7"; KS_ANCHOR="$8"; KS_MARKER="$9"
+    KS_RULES="$7"; KS_ANCHOR="$8"; KS_MARKER="$9"; CORE_PORT="${10}"
     [ -n "$ROOT_DIR" ] && [ -n "$KS_MARKER" ] || exit 64
+    case "$CORE_PORT" in ''|*[!0-9]*) exit 64 ;; esac
     PATH=/usr/bin:/bin:/usr/sbin:/sbin
     umask 022
 
@@ -51,9 +53,19 @@ public enum TunHelper {
     \#(dnsFunctions)
     \#(proxyFunctions)
     \#(killSwitchFunctions)
+    \#(appsFunctions)
     child=""
+    start_tun() {
+      apps_sync
+      "$ROOT_DIR/xray" run -c "$ROOT_DIR/config.json" -c "$ROOT_DIR/apps.json" > "$ROOT_DIR/xray.log" 2>&1 &
+      child=$!
+      tick=0
+    }
     stop_tun() {
       dns_restore
+      kill_tun
+    }
+    kill_tun() {
       [ -n "$child" ] || return 0
       kill "$child" 2>/dev/null
       n=0
@@ -80,9 +92,11 @@ public enum TunHelper {
       if [ ! -e "$STATE_DIR/tun.on" ]; then
         stop_tun
       elif [ -z "$child" ]; then
-        "$ROOT_DIR/xray" run -c "$ROOT_DIR/config.json" > "$ROOT_DIR/xray.log" 2>&1 &
-        child=$!
-        tick=0
+        start_tun
+      elif apps_changed; then
+        # The rules name other apps: a new forwarder at once, the DNS left as it is.
+        kill_tun
+        start_tun
       elif ! kill -0 "$child" 2>/dev/null; then
         # It died on its own. Wait before the next try so a broken start does not spin.
         wait "$child" 2>/dev/null
@@ -239,14 +253,45 @@ public enum TunHelper {
     }
     """#
 
+    /// The TUN app rules (spec 9.5): the app leaves the list as `tun.apps` in the request
+    /// directory; the helper moves it into its own folder (a rename moves a link, not what it
+    /// points to), where no one else can swap it, and uses it only as a plain file of at most
+    /// 256 KB with one link and the request directory's owner, else as an empty list. It becomes
+    /// `apps.json`, the forwarder's second config file, through `TunApps.awkProgram`, which skips
+    /// any line that is not a plain entry, readable by root alone.
+    static let appsFunctions = #"""
+    apps_sum=""
+    apps_now=""
+    apps_take() {
+      f="$STATE_DIR/\#(TunApps.file)"; g="$ROOT_DIR/apps.in"
+      [ -e "$f" ] || [ -L "$f" ] || return 1
+      rm -f "$g"
+      mv -f "$f" "$g" 2>/dev/null || return 1
+      if [ -L "$g" ] || [ ! -f "$g" ] || [ "$(stat -f '%u %l' "$g")" != "$(stat -f %u "$STATE_DIR") 1" ] \
+        || [ "$(stat -f %z "$g")" -gt 262144 ]; then
+        rm -rf "$g"; : > "$g"
+      fi
+      # Root's from here on, so it can't be written through its new name either.
+      chown 0:0 "$g" 2>/dev/null; chmod 600 "$g"
+      apps_now=$(head -c 262144 "$g")
+    }
+    apps_changed() { apps_take && [ "$apps_now" != "$apps_sum" ]; }
+    apps_sync() {
+      apps_take
+      [ -f "$ROOT_DIR/apps.in" ] || : > "$ROOT_DIR/apps.in"
+      ( umask 077; head -c 262144 "$ROOT_DIR/apps.in" | LC_ALL=C awk -v port="$CORE_PORT" '\#(TunApps.awkProgram.replacingOccurrences(of: "'", with: "'\\''"))' > "$ROOT_DIR/apps.json" )
+      apps_sum=$apps_now
+    }
+    """#
+
     /// The shell command that starts the helper in the background and returns at once.
     /// `coreSHA256` must be taken before the prompt; `config` is the forwarder config's JSON.
     public static func launchCommand(
         appPID: Int32, stateDirectory: URL, core: URL, coreSHA256: String, config: String, rootDirectory: URL,
-        killSwitchRules: String, killSwitchAnchor: String, killSwitchMarker: URL
+        killSwitchRules: String, killSwitchAnchor: String, killSwitchMarker: URL, corePort: Int
     ) -> String {
         let arguments = [script, "v2mac-tun-helper", "\(appPID)", stateDirectory.path, core.path, coreSHA256, config, rootDirectory.path,
-                         killSwitchRules, killSwitchAnchor, killSwitchMarker.path]
+                         killSwitchRules, killSwitchAnchor, killSwitchMarker.path, "\(corePort)"]
         return "/bin/sh -c " + arguments.map(shellQuoted).joined(separator: " ") + " > /dev/null 2>&1 &"
     }
 

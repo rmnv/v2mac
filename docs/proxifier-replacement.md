@@ -20,10 +20,10 @@ to bottom with the first match winning:
 Proxifier catches every app's connections, including apps that ignore the system proxy, and
 knows which app opened each one. V2Mac must do both.
 
-## Status (2026-10-17)
+## Status (2026-11-03)
 
-Phases 1, 2, 3 and 5 are done (spec 8.6). Phase 4 is not started: it needs TUN mode
-tested while the installed V2Mac is not in use.
+Phases 1, 2, 3 and 5 are done (spec 8.6). Phase 4 is implemented (spec 9.5, "App rules");
+its "Done when" needs a run with TUN on and Proxifier quit.
 
 ## What works today
 
@@ -94,16 +94,34 @@ broad Proxy rules).
 In TUN mode every app's traffic is captured, but it reaches the core through the root
 forwarder, so the core sees the forwarder (`xray`) as the app. App rules stop working.
 
-- [ ] First, find out whether the forwarder's own Xray sees the real app for traffic that
+- [x] First, find out whether the forwarder's own Xray sees the real app for traffic that
       arrives from the TUN interface. Phase 4 depends on the answer.
-- [ ] If it does: the forwarder checks only the app rules and sends each connection to one of
-      three core ports (proxy, direct, block). The core handles each port with its own rules.
-      Only app names reach the root process, never server configs (spec 9.5).
-- [ ] If it doesn't: look up the app by the connection's source port in the root helper,
-      or accept that app rules work only in system proxy mode.
-- [ ] Turn on the QUIC block from Phase 1 in TUN mode by default, so Chrome's UDP traffic
-      follows the host rules.
-- [ ] Update spec 9.5 and 8.6.
+      **Yes (2026-11-03, Xray 26.10.21, TCP only):** a root Xray with a TUN routing only
+      192.0.2.0/24 and the rule `process: ["curl"] → block` blocked curl's request and let
+      python3's identical one through (access log `[tun -> block]` / `[tun >> direct]`).
+      **Full run (same day, macOS 27.0.1, alongside the installed V2Mac's own TUN):**
+      - TCP and UDP (DNS to 192.0.2.53), each in the order blocked → allowed → allowed → blocked:
+        every connection hit the rule for its app (`block`, `py`, `dns-py`).
+      - Root daemons are found with their full path: `softwareupdated`, `mobileassetd`, `apsd`
+        (a Lua hook calling `router.FindProcess` logged name and path, no errors), so `/System/` and
+        `/usr/libexec/` folder rules work.
+      - Docker Desktop: container DNS arrives as `com.docker.backend` and matched the
+        `/Applications/Docker.app/` folder rule. Container HTTP did not enter the TUN at all: Docker
+        Desktop sent it through the system proxy, where the core sees the same process.
+      - Names are what Xray finds, not what was typed: `/usr/bin/python3` shows up as `Python`
+        (Xcode's `Python.app`). Rules must use the found name or the app's folder.
+- [x] It does, so the forwarder checks only the app rules. Instead of three core ports it
+      reaches the one `tun-in` port as a SOCKS user named after the app entry that matched,
+      and each app rule gets a copy on `tun-in` that matches those users. So "Via" rules,
+      "Only when" conditions and the rule order work as on the proxy port, and only the
+      app entries reach root, never a rule or a server config (spec 9.5, `TunApps`).
+- [x] ~~If it doesn't~~: not needed.
+- [ ] QUIC block on by default in TUN mode: not done. The forwarder and the core both
+      sniff QUIC, so host rules already see the names in Chrome's QUIC traffic; decide
+      after the acceptance run whether anything still slips past.
+- [x] Update spec 9.5 and 8.6.
+- [ ] Real-TUN test `appRulesHoldThroughARealTun` (needs password-free `sudo`, so it runs
+      in CI) passing.
 
 **Done when:** with TUN on and Proxifier quit, every v7.1 rule behaves as before, including
 apps that ignore the system proxy (command-line tools, Docker, Apple background services).
